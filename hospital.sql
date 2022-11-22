@@ -347,23 +347,6 @@ SELECT P.Name AS Physician, Pr.Name AS Procedure, U.Date, Pt.Name AS Patient
                 AND T.Physician = U.Physician
               );
 
-
-/*
-SELECT P.Name,Pr.Name,U.Date,Pt.Name FROM 
- Physician AS P,    
- Procedure AS Pr,
- Undergoes AS U,
- Patient AS Pt,
- (SELECT Physician, Procedure FROM Undergoes 
-    EXCEPT 
-    SELECT Physician, Treatment FROM Trained_in) AS Pe  
- WHERE P.EmployeeID=Pe.Physician 
- AND Pe.Procedure=Pr.Code 
- AND Pe.Physician=U.Physician 
- AND Pe.Procedure=U.Procedure 
- AND U.Patient=Pt.SSN
- */
-
  -- Q3
 
  /* 
