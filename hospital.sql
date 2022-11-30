@@ -42,8 +42,8 @@ DROP TABLE IF EXISTS Trained_In;
 CREATE TABLE Trained_In (
   Physician INTEGER NOT NULL,
   Treatment INTEGER NOT NULL,
-  CertificationDate DATETIME NOT NULL,
-  CertificationExpires DATETIME NOT NULL,
+  CertificationDate DATE NOT NULL,
+  CertificationExpires DATE NOT NULL,
   CONSTRAINT fk_Trained_In_Physician_EmployeeID FOREIGN KEY(Physician) REFERENCES Physician(EmployeeID),
   CONSTRAINT fk_Trained_In_Procedures_Code FOREIGN KEY(Treatment) REFERENCES Procedures(Code),
   PRIMARY KEY(Physician, Treatment)
@@ -75,8 +75,8 @@ CREATE TABLE Appointment (
   Patient INTEGER NOT NULL,    
   PrepNurse INTEGER,
   Physician INTEGER NOT NULL,
-  Starto DATETIME NOT NULL,
-  Endo DATETIME NOT NULL,
+  Starto DATE NOT NULL,
+  Endo DATE NOT NULL,
   ExaminationRoom TEXT NOT NULL,
   CONSTRAINT fk_Appointment_Patient_SSN FOREIGN KEY(Patient) REFERENCES Patient(SSN),
   CONSTRAINT fk_Appointment_Nurse_EmployeeID FOREIGN KEY(PrepNurse) REFERENCES Nurse(EmployeeID),
@@ -96,7 +96,7 @@ CREATE TABLE Prescribes (
   Physician INTEGER NOT NULL,
   Patient INTEGER NOT NULL, 
   Medication INTEGER NOT NULL, 
-  Date DATETIME NOT NULL,
+  Date DATE NOT NULL,
   Appointment INTEGER,  
   Dose VARCHAR(30) NOT NULL,
   PRIMARY KEY(Physician, Patient, Medication, Date),
@@ -128,8 +128,8 @@ CREATE TABLE On_Call (
   Nurse INTEGER NOT NULL,
   BlockFloor INTEGER NOT NULL, 
   BlockCode INTEGER NOT NULL,
-  OnCallStart DATETIME NOT NULL,
-  OnCallEnd DATETIME NOT NULL,
+  OnCallStart DATE NOT NULL,
+  OnCallEnd DATE NOT NULL,
   PRIMARY KEY(Nurse, BlockFloor, BlockCode, OnCallStart, OnCallEnd),
   CONSTRAINT fk_OnCall_Nurse_EmployeeID FOREIGN KEY(Nurse) REFERENCES Nurse(EmployeeID),
   CONSTRAINT fk_OnCall_Block_Floor FOREIGN KEY(BlockFloor, BlockCode) REFERENCES Block(BlockFloor, BlockCode) 
@@ -140,8 +140,8 @@ CREATE TABLE Stay (
   StayID INTEGER PRIMARY KEY NOT NULL,
   Patient INTEGER NOT NULL,
   Room INTEGER NOT NULL,
-  StayStart DATETIME NOT NULL,
-  StayEnd DATETIME NOT NULL,
+  StayStart DATE NOT NULL,
+  StayEnd DATE NOT NULL,
   CONSTRAINT fk_Stay_Patient_SSN FOREIGN KEY(Patient) REFERENCES Patient(SSN),
   CONSTRAINT fk_Stay_Room_Number FOREIGN KEY(Room) REFERENCES Room(RoomNumber)
 );
@@ -151,7 +151,7 @@ CREATE TABLE Undergoes (
   Patient INTEGER NOT NULL,
   Procedures INTEGER NOT NULL,
   Stay INTEGER NOT NULL,
-  DateUndergoes DATETIME NOT NULL,
+  DateUndergoes DATE NOT NULL,
   Physician INTEGER NOT NULL,
   AssistingNurse INTEGER,
   PRIMARY KEY(Patient, Procedures, Stay, DateUndergoes),
@@ -323,10 +323,20 @@ they have never been certified to perform
 SELECT Physician.Name
 FROM Physician
    INNER JOIN Undergoes ON Physician.EmployeeID = Undergoes.Physician
-   LEFT JOIN Trained_In ON Undergoes.Procedure = Trained_In.Treatment  
+   LEFT JOIN Trained_In ON Undergoes.Procedures = Trained_In.Treatment
 AND Physician.EmployeeID = Trained_In.Physician
 WHERE Trained_In.Treatment IS NULL
 GROUP BY Physician.EmployeeID;
+
+/*
+SELECT P.Name
+FROM Physician P
+   INNER JOIN Undergoes U ON P.EmployeeID = U.Physician
+   LEFT JOIN Trained_In TR ON U.Procedures = Tr.Treatment  
+AND P.EmployeeID = Tr.Physician
+WHERE Tr.Treatment IS NULL
+GROUP BY P.EmployeeID;
+*/
 
 -- Q2
 
