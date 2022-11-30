@@ -441,3 +441,14 @@ N.b. The solution below fails in MS SQL Server Management Studio, with the follo
 SELECT ExaminationRoom, COUNT(AppointmentID) AS Number FROM Appointment
 GROUP BY ExaminationRoom;
 
+-- Q8
+
+/*
+Write a SQL query to count the number of available rooms.
+Return count as "Number of available rooms".
+*/
+
+
+SELECT COUNT(*) "Number of available rooms"
+FROM room Where unavailable='0';
+
