@@ -434,8 +434,6 @@ SELECT N.Name FROM Nurse N
 The hospital has several examination rooms where appointments take place. 
 Obtain the number of appointments that have taken place in each examination room.
 
-N.b. The solution below fails in MS SQL Server Management Studio, with the following message: 
-
 */
 
 SELECT ExaminationRoom, COUNT(AppointmentID) AS Number FROM Appointment
@@ -451,4 +449,18 @@ Return count as "Number of available rooms".
 
 SELECT COUNT(*) "Number of available rooms"
 FROM room Where unavailable='0';
+
+-- Q9
+/*
+ write a SQL query to find those physicians who are yet to be affiliated.
+ Return Physician name as "Physician", Position, and department as "Department"
+*/
+
+SELECT p.name AS "Physician",
+       p.position,
+       d.name AS "Department"
+FROM physician p
+JOIN affiliated_with a ON a.physician=p.employeeid
+JOIN department d ON a.department=d.departmentid
+WHERE primaryaffiliation='1';
 
