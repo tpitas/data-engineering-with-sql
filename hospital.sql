@@ -462,5 +462,5 @@ SELECT p.name AS "Physician",
 FROM physician p
 JOIN affiliated_with a ON a.physician=p.employeeid
 JOIN department d ON a.department=d.departmentid
-WHERE primaryaffiliation='1';
+WHERE primaryaffiliation='1'; -- for false
 
