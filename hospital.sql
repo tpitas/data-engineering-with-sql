@@ -464,3 +464,14 @@ JOIN affiliated_with a ON a.physician=p.employeeid
 JOIN department d ON a.department=d.departmentid
 WHERE primaryaffiliation='1'; -- for false
 
+/*
+Write a SQL query to find the patients with their physicians by whom they received preliminary treatment.
+Return Patient name as "Patient", address as "Address", Physician name as "Physician" and address contains 'Foobaz'
+*/
+
+SELECT pt.name AS "Patient",
+       pt.address AS "Address",
+       pt.name AS "Physician"
+FROM patient pt
+JOIN physician ph ON pt.pcp=ph.employeeid
+WHERE pt.address LIKE '%Foobaz%';
