@@ -1,4 +1,4 @@
--- Create datawarehouses
+-- Create a warehouse
 -- 1 create schema
 create schema dtwh_admin;
 
