@@ -1,7 +1,7 @@
 -- DATABASE HOSPITAL
 -- https://en.wikibooks.org/wiki/SQL_Exercises/The_Hospital
 
-CREATE DATABASE HOSPITAL
+CREATE DATABASE HOSPITAL;
 
 DROP TABLE IF EXISTS Physician;
 CREATE TABLE Physician (
