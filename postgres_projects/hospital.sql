@@ -358,15 +358,15 @@ SELECT P.Name AS Physician, Pr.Name AS Procedure, U.Date, Pt.Name AS Patient
                 AND T.Physician = U.Physician
               );
 
- -- Q3
+-- Q3
 
- /* 
- Same as the previous query, but include the following information in the results: 
- Physician name, name of procedure, date when the procedure was carried out, 
- name of the patient the procedure was carried out on, and date when the certification expired
+/* 
+Same as the previous query, but include the following information in the results: 
+Physician name, name of procedure, date when the procedure was carried out, 
+name of the patient the procedure was carried out on, and date when the certification expired
  */
 
- SELECT P.Name AS Physician, Pr.Name AS Procedure, U.Date, Pt.Name AS Patient, T.CertificationExpires
+SELECT P.Name AS Physician, Pr.Name AS Procedure, U.Date, Pt.Name AS Patient, T.CertificationExpires
   FROM Physician P, Undergoes U, Patient Pt, Procedure Pr, Trained_In T
   WHERE U.Patient = Pt.SSN
     AND U.Procedure = Pr.Code
@@ -388,10 +388,10 @@ SELECT Pt.Name AS Patient, Ph.Name AS Physician, N.Name AS Nurse,
 A.Start, A.End, A.ExaminationRoom, PhPCP.Name AS PCP
 FROM Patient Pt, Physician Ph, Physician PhPCP, Appointment A 
 LEFT JOIN Nurse N ON A.PrepNurse = N.EmployeeID
- WHERE A.Patient = Pt.SSN
-   AND A.Physician = Ph.EmployeeID
-   AND Pt.PCP = PhPCP.EmployeeID
-   AND A.Physician <> Pt.PCP;
+  WHERE A.Patient = Pt.SSN
+  AND A.Physician = Ph.EmployeeID
+  AND Pt.PCP = PhPCP.EmployeeID
+  AND A.Physician <> Pt.PCP;
 
 
 -- Q5
@@ -405,11 +405,11 @@ Select all rows from Undergoes that exhibit this inconsistency.
 */
 
 SELECT * FROM Undergoes U
- WHERE Patient <> 
-   (
-     SELECT Patient FROM Stay S
+  WHERE Patient <> 
+    (
+      SELECT Patient FROM Stay S
       WHERE U.Stay = S.StayID
-   );
+  );
 
 
 -- Q6
@@ -419,13 +419,13 @@ Obtain the names of all the nurses who have ever been on call for room 123
 */
 
 SELECT N.Name FROM Nurse N
- WHERE EmployeeID IN
-   (
-     SELECT OC.Nurse FROM On_Call OC, Room R
+  WHERE EmployeeID IN
+  (
+    SELECT OC.Nurse FROM On_Call OC, Room R
       WHERE OC.BlockFloor = R.BlockFloor
-        AND OC.BlockCode = R.BlockCode
-        AND R.Number = 123
-   );
+      AND OC.BlockCode = R.BlockCode
+      AND R.Number = 123
+  );
 
 
 -- Q7
@@ -452,13 +452,13 @@ FROM room Where unavailable='0';
 
 -- Q9
 /*
- write a SQL query to find those physicians who are yet to be affiliated.
- Return Physician name as "Physician", Position, and department as "Department"
+write a SQL query to find those physicians who are yet to be affiliated.
+Return Physician name as "Physician", Position, and department as "Department"
 */
 
 SELECT p.name AS "Physician",
-       p.position,
-       d.name AS "Department"
+  p.position,
+  d.name AS "Department"
 FROM physician p
 JOIN affiliated_with a ON a.physician=p.employeeid
 JOIN department d ON a.department=d.departmentid
@@ -470,8 +470,53 @@ Return Patient name as "Patient", address as "Address", Physician name as "Physi
 */
 
 SELECT pt.name AS "Patient",
-       pt.address AS "Address",
-       pt.name AS "Physician"
+    pt.address AS "Address",
+    pt.name AS "Physician"
 FROM patient pt
 JOIN physician ph ON pt.pcp=ph.employeeid
 WHERE pt.address LIKE '%Foobaz%';
+
+-- Q10
+/*
+Using index to deal with performance
+*/
+
+EXPLAIN SELECT Physician.Name
+FROM Physician
+  INNER JOIN Undergoes ON Physician.EmployeeID = Undergoes.Physician
+  LEFT JOIN Trained_In ON Undergoes.Procedures = Trained_In.Treatment
+AND Physician.EmployeeID = Trained_In.Physician
+WHERE Trained_In.Treatment IS NULL
+GROUP BY Physician.EmployeeID;
+
+/*
+Group  (cost=243.35..272.67 rows=9 width=82)
+  Group Key: physician.employeeid
+  ->  Merge Anti Join  (cost=243.35..269.73 rows=1178 width=82)
+        Merge Cond: ((physician.employeeid = trained_in.physician) AND (undergoes.procedures = trained_in.treatment))
+        ->  Sort  (cost=114.45..118.38 rows=1570 width=86)
+              Sort Key: physician.employeeid, undergoes.procedures
+              ->  Hash Join  (cost=1.20..31.11 rows=1570 width=86)
+                    Hash Cond: (undergoes.physician = physician.employeeid)
+                    ->  Seq Scan on undergoes  (cost=0.00..25.70 rows=1570 width=8)
+                    ->  Hash  (cost=1.09..1.09 rows=9 width=82)
+                          ->  Seq Scan on physician  (cost=0.00..1.09 rows=9 width=82)
+        ->  Sort  (cost=128.89..133.52 rows=1850 width=8)
+              Sort Key: trained_in.physician, trained_in.treatment
+              ->  Seq Scan on trained_in  (cost=0.00..28.50 rows=1850 width=8)
+
+*/
+
+/*
+Create an index to reduce the cost
+*/
+
+CREATE INDEX INX_PHYS ON PHYSICIAN(EMPLOYEEID);
+
+EXPLAIN SELECT Physician.Name
+FROM Physician
+  INNER JOIN Undergoes ON Physician.EmployeeID = Undergoes.Physician
+  LEFT JOIN Trained_In ON Undergoes.Procedures = Trained_In.Treatment
+AND Physician.EmployeeID = Trained_In.Physician
+WHERE Trained_In.Treatment IS NULL
+GROUP BY Physician.EmployeeID;
