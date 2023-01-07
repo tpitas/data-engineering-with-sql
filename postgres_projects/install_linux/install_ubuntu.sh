@@ -5,3 +5,13 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 sudo apt-get update
 sudo apt-get -y install postgresql
 
+# Switch over to the postgres account on your server by typing:
+sudo -i -u postgres
+# Or
+sudo -u postgres psql
+
+# Check your current connection information
+\conninfo
+
+# List Databases
+\l
