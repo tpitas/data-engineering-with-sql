@@ -1,0 +1,6 @@
+# run the command below
+docker compose up -d
+# view your logs
+docker logs -f local_pgdb
+# configure pgadmin and open it 
+http://localhost:5050/ 
