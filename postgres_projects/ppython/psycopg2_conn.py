@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# importing packages
+# importing packages psycopg2
 import psycopg2
 
 # forming connection
