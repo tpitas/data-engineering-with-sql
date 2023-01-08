@@ -1,0 +1,31 @@
+# create a virtualenv
+python3 -m venv env
+
+# activate the virtualenv
+source env/bin/activate
+
+# install pandas pyarrow 
+pip3 install pandas pyarrow fastparquet
+
+# load the parquet file into a pandas DataFrame
+import pandas as pd
+df = pd.read_parquet('/Users/data-engineering/postgres_projects/datasets/NY2022_10.parquet')
+
+# save the DataFrame as csv file
+df.to_csv('/Users/data-engineering/postgres_projects/datasets/NY2022_10.csv')
+
+# load the cvs file into a pandas DataFrame
+df1 = pd.read_csv('/Users/data-engineering/postgres_projects/datasets/NY2022_10.csv', index_col=0)
+
+# Let's have a look at the 5 rows of the DataFrame
+df1.head()
+
+# retrieving multiple rows by iloc method
+rows = df1.iloc [[0,1,2,3,4]]
+rows.head()
+
+# filter csv file by selectioning some columns
+df2 = pd.read_csv('/Users/data-engineering/postgres_projects/datasets/NY2022_10.csv', index_col=0, \ 
+usecols=['VendorID', 'tpep_pickup_datetime', 'tpep_dropoff_datetime', 'passenger_count', 'fare_amount' ], nrows=5)
+
+df2

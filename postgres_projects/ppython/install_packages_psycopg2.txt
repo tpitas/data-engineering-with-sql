@@ -1,0 +1,2 @@
+# download psycopg2
+pip install psycopg2 
