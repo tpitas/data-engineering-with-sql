@@ -4,6 +4,9 @@ python3 -m venv env
 # activate the virtualenv
 source env/bin/activate
 
+# launch python
+python
+
 # install pandas pyarrow 
 pip3 install pandas pyarrow fastparquet
 
