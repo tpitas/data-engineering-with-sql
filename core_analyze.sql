@@ -1,4 +1,4 @@
-# analyze function
+# Analyze function
 
 DO $$
     DECLARE
