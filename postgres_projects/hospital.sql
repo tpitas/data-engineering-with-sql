@@ -3,6 +3,8 @@
 
 CREATE DATABASE HOSPITAL;
 
+-- create table Physician
+
 DROP TABLE IF EXISTS Physician;
 CREATE TABLE Physician (
   EmployeeID INTEGER NOT NULL,
@@ -12,6 +14,8 @@ CREATE TABLE Physician (
   CONSTRAINT pk_physician PRIMARY KEY(EmployeeID)
 ); 
 
+-- create table Department
+
 DROP TABLE IF EXISTS Department;
 CREATE TABLE Department (
   DepartmentID INTEGER NOT NULL,
@@ -20,6 +24,8 @@ CREATE TABLE Department (
   CONSTRAINT pk_Department PRIMARY KEY(DepartmentID),
   CONSTRAINT fk_Department_Physician_EmployeeID FOREIGN KEY(Head) REFERENCES Physician(EmployeeID)
 );
+
+-- create table Affiliated_With
 
 DROP TABLE IF EXISTS Affiliated_With;
 CREATE TABLE Affiliated_With (
@@ -31,12 +37,16 @@ CREATE TABLE Affiliated_With (
   PRIMARY KEY(Physician, Department)
 );
 
+-- create table Procedures
+
 DROP TABLE IF EXISTS Procedures;
 CREATE TABLE Procedures (
   Code INTEGER PRIMARY KEY NOT NULL,
   Name VARCHAR(30) NOT NULL,
   Cost REAL NOT NULL
 );
+
+-- create table Trained_In
 
 DROP TABLE IF EXISTS Trained_In;
 CREATE TABLE Trained_In (
@@ -49,6 +59,8 @@ CREATE TABLE Trained_In (
   PRIMARY KEY(Physician, Treatment)
 );
 
+-- create table Patient
+
 DROP TABLE IF EXISTS Patient;
 CREATE TABLE Patient (
   SSN INTEGER PRIMARY KEY NOT NULL,
@@ -60,6 +72,8 @@ CREATE TABLE Patient (
   CONSTRAINT fk_Patient_Physician_EmployeeID FOREIGN KEY(PCP) REFERENCES Physician(EmployeeID)
 );
 
+-- create table Nurse
+
 DROP TABLE IF EXISTS Nurse;
 CREATE TABLE Nurse (
   EmployeeID INTEGER PRIMARY KEY NOT NULL,
@@ -68,6 +82,8 @@ CREATE TABLE Nurse (
   Registered BIT NOT NULL,
   SSN INTEGER NOT NULL
 );
+
+-- create table Appointment
 
 DROP TABLE IF EXISTS Appointment;
 CREATE TABLE Appointment (
@@ -82,6 +98,8 @@ CREATE TABLE Appointment (
   CONSTRAINT fk_Appointment_Nurse_EmployeeID FOREIGN KEY(PrepNurse) REFERENCES Nurse(EmployeeID),
   CONSTRAINT fk_Appointment_Physician_EmployeeID FOREIGN KEY(Physician) REFERENCES Physician(EmployeeID)
 );
+
+-- create table Medication
 
 DROP TABLE IF EXISTS Medication;
 CREATE TABLE Medication (
