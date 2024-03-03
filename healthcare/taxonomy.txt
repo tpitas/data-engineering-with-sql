@@ -1,1 +1,4 @@
+The taxonomy code is a unique alphanumeric code, ten characters in length. 
+The code set is structured into three distinct "Levels" including Provider Grouping, Classification, and Area of Specialization
+For more details follow the link:
 https://taxonomy.nucc.org/
